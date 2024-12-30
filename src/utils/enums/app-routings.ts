@@ -4,4 +4,5 @@ export enum AppRoutings {
   LogIn = "/Login",
   Dashboard = "/dashboard/user",
   AdminHome = "/Dashboard/Admin",
+  Transactions = "/Transactions/User",
 }

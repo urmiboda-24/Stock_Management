@@ -5,8 +5,10 @@ import createSagaMiddleware from "redux-saga";
 import rootReducer from "./rootReducer";
 import { rootSaga } from "./rootSaga";
 import { IAuthState } from "./auth/reducer";
+import { ITransactionInitialState } from "../utils/interface/transactions";
 export interface IRootState {
   auth: IAuthState;
+  transactions: ITransactionInitialState;
 }
 const sagaMiddleware = createSagaMiddleware();
 const persistConfig = {

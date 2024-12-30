@@ -21,6 +21,12 @@ axios.interceptors.request.use(
     if (config.url?.includes(AppRoutings.LogIn)) {
       isTokenRequired = false;
     }
+    if (isTokenRequired === true) {
+      const token = localStorage.getItem("token");
+      if (token) {
+        config.headers.auth_token = `${token}`;
+      }
+    }
 
     if (config.url) {
       config.url = Config.env.BaseUrl + config.url;

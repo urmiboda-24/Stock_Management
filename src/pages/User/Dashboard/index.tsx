@@ -40,7 +40,7 @@ import {
 } from "../../../utils/constants/userDashboard";
 import { checkCondition } from "../../../utils/helper";
 import { getStatusColor } from "../../../utils/helper/userDashboard";
-import CustomBarChart from "../../../component/CustomBarChart";
+import CustomBarChart from "../../../component/customBarChart";
 import CommonHeader from "../../../component/header";
 
 const renderNewTask = () => {

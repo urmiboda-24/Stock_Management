@@ -10,6 +10,7 @@ import {
   List,
 } from "@mui/material";
 import SettingsIcon from "@mui/icons-material/Settings";
+import HomeIcon from "@mui/icons-material/Home";
 import ShowChartIcon from "@mui/icons-material/ShowChart";
 import WifiProtectedSetupIcon from "@mui/icons-material/WifiProtectedSetup";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -19,10 +20,14 @@ import { NavLink } from "react-router-dom";
 import { AppRoutings } from "../utils/enums/app-routings";
 
 const SidebarOption = [
-  { name: "Overview", icon: SettingsIcon, path: AppRoutings.Dashboard },
-  { name: "Settings", icon: SettingsIcon, path: "/Settings" },
+  { name: "Overview", icon: HomeIcon, path: AppRoutings.Dashboard },
+  { name: "Transactions", icon: SettingsIcon, path: AppRoutings.Transactions },
   { name: "Stock", icon: ShowChartIcon, path: AppRoutings.AdminHome },
-  { name: "Portfolio", icon: WifiProtectedSetupIcon, path: "/Portfolio" },
+  {
+    name: "Admin Home",
+    icon: WifiProtectedSetupIcon,
+    path: AppRoutings.AdminHome,
+  },
 ];
 
 const SidebarComponent = ({ children }: any) => {

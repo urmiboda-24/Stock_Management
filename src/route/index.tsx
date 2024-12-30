@@ -8,6 +8,7 @@ import { IRoute } from "../utils/interface/common";
 import { useSelector } from "react-redux";
 import { IRootState } from "../store/store";
 import SidebarComponent from "../component/sidebar";
+import Transactions from "../pages/User/Transactions";
 
 const RouteList: IRoute[] = [
   {
@@ -42,13 +43,25 @@ const RouteList: IRoute[] = [
     component: <AdminHome />,
     isAdmin: true,
   },
+  {
+    id: 5,
+    path: AppRoutings.Transactions,
+    exact: true,
+    isProtectedRoute: true,
+    component: <Transactions />,
+    isAdmin: false,
+  },
 ];
 
 const AppRoutes: React.FC = () => {
   const { userEmail, token } = useSelector((state: IRootState) => state.auth);
   const location = useLocation();
   const isAdminRole = userEmail?.includes("admin");
-  const urlList = [AppRoutings.Dashboard, AppRoutings.AdminHome];
+  const urlList = [
+    AppRoutings.Dashboard,
+    AppRoutings.AdminHome,
+    AppRoutings.Transactions,
+  ];
   const showSidebar = urlList.toString().includes(location.pathname);
   const htmlElement = () => {
     return (
