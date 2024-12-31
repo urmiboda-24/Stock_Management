@@ -18,11 +18,15 @@ const RateBox = styled(Box)({
 export const getStatusColor = (status: string): string => {
   switch (status.toLowerCase()) {
     case "online":
+    case "paid":
       return "green";
     case "offline":
       return "yellow";
     case "in meeting":
+    case "cancelled":
       return "red";
+    case "due":
+      return "orange";
     default:
       return "red";
   }

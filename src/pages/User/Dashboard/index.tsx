@@ -42,6 +42,21 @@ import { checkCondition } from "../../../utils/helper";
 import { getStatusColor } from "../../../utils/helper/userDashboard";
 import CustomBarChart from "../../../component/customBarChart";
 import CommonHeader from "../../../component/header";
+import {
+  MapDispatchToProps,
+  connect,
+  useSelector as UseSelector,
+} from "react-redux";
+import { IDashboardContainerDispatch } from "../../../utils/interface/dashboard";
+import { getDashboardDataRequest } from "../../../store/dashboard/action";
+import { useEffect as UseEffect, useState as UseState } from "react";
+
+export type DashboardProps = IDashboardContainerDispatch;
+
+const mapDispatchToProps: MapDispatchToProps<IDashboardContainerDispatch, any> =
+  {
+    getDashboardDataRequest,
+  };
 
 const renderNewTask = () => {
   return (
@@ -58,18 +73,27 @@ const renderNewTask = () => {
 };
 
 const renderSaleChat = () => {
-  const data = {
-    labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-    datasets: [
-      {
-        label: "",
-        data: [1, 2, 2, 3, 3, 4, 3],
-        borderColor: "rgba(75,192,192,1)",
-        backgroundColor: "rgba(75,192,192,0.2)",
-        tension: 0.4,
-        fill: true,
-      },
-    ],
+  const { dashboardData } = UseSelector((state: any) => state.dashboard);
+  const saleChartData = dashboardData[0];
+  const [isWeek, setIsWeek] = UseState<boolean>(true);
+  const onWeekMonthClick = (type: string) => {
+    setIsWeek(type !== "Month");
+  };
+
+  const getData = () => {
+    return {
+      labels: isWeek ? saleChartData.week : saleChartData.month,
+      datasets: [
+        {
+          label: "",
+          data: isWeek ? saleChartData.week_value : saleChartData.month_value,
+          borderColor: "rgba(75,192,192,1)",
+          backgroundColor: "rgba(75,192,192,0.2)",
+          tension: 0.4,
+          fill: true,
+        },
+      ],
+    };
   };
 
   const options: ChartOptions<"line"> = {
@@ -92,6 +116,7 @@ const renderSaleChat = () => {
       },
     },
   };
+
   return (
     <SaleCharContainer>
       <SaleInfoBox>
@@ -107,12 +132,26 @@ const renderSaleChat = () => {
           </DayTypo>
         </InfoBox>
         <SaleButtonBox>
-          <Button className="selectedButton">Week</Button>
-          <Button className="notSelectedBtn">Month</Button>
+          <Button
+            onClick={() => onWeekMonthClick("Week")}
+            className={isWeek ? "selectedButton" : "notSelectedBtn"}
+          >
+            Week
+          </Button>
+          <Button
+            onClick={() => onWeekMonthClick("Month")}
+            className={!isWeek ? "selectedButton" : "notSelectedBtn"}
+          >
+            Month
+          </Button>
         </SaleButtonBox>
       </SaleInfoBox>
       <Divider />
-      <CustomLineChart data={data} options={options} className="chartBox" />
+      <CustomLineChart
+        data={getData()}
+        options={options}
+        className="chartBox"
+      />
     </SaleCharContainer>
   );
 };
@@ -326,12 +365,15 @@ const renderAcquisitionSection = () => {
 };
 
 const renderOrderSection = () => {
+  const { dashboardData } = UseSelector((state: any) => state.dashboard);
+  const chart1 = dashboardData[1];
+  const chart2 = dashboardData[2];
   const data = {
-    labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    labels: chart1.week,
     datasets: [
       {
         label: "",
-        data: [1, 2, 2, 8, 3, 4, 3],
+        data: chart1.week_value,
         tension: 0.4,
         fill: true,
         barThickness: 12,
@@ -340,7 +382,7 @@ const renderOrderSection = () => {
       },
       {
         label: "",
-        data: [2, 4, 9, 3, 1, 9, 7],
+        data: chart2.week_value,
         backgroundColor: "rgb(46, 125, 50)",
         tension: 0.4,
         fill: true,
@@ -371,8 +413,6 @@ const renderOrderSection = () => {
         grid: {
           offset: true,
         },
-        max: "10",
-        min: "0",
         display: false,
         title: {
           display: false,
@@ -399,11 +439,15 @@ const renderOrderSection = () => {
         <Box>
           <StatusBox>
             <FiberManualRecordSharp className="dotIcon" color="primary" />
-            <AcquisitionTypo>July</AcquisitionTypo>
+            <BarChatLabelTypo>
+              <span title={chart1.stock_name}>{chart1.stock_name}</span>
+            </BarChatLabelTypo>
           </StatusBox>
           <StatusBox>
             <FiberManualRecordSharp className="dotIcon" color="success" />{" "}
-            <AcquisitionTypo>August</AcquisitionTypo>
+            <BarChatLabelTypo>
+              <span title={chart2.stock_name}>{chart2.stock_name}</span>
+            </BarChatLabelTypo>
           </StatusBox>
         </Box>
       </OrderTitleBox>
@@ -413,7 +457,10 @@ const renderOrderSection = () => {
   );
 };
 
-const Dashboard = () => {
+const Dashboard = (props: IDashboardContainerDispatch) => {
+  UseEffect(() => {
+    props.getDashboardDataRequest();
+  }, []);
   return (
     <Box style={{ width: "100%" }}>
       <CommonHeader />
@@ -442,18 +489,8 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default connect(null, mapDispatchToProps)(Dashboard);
 
-const UserInfoContainer = styled(Box)({
-  display: "flex",
-  alignItems: "center",
-  gap: "20px",
-});
-const UserInfoBox = styled(Box)({
-  display: "flex",
-  gap: 10,
-  alignItems: "center",
-});
 const NewTaskBox = styled(Box)({
   margin: "20px 0px",
   display: "flex",
@@ -553,8 +590,8 @@ const SaleButtonBox = styled(Box)({
     borderRadius: "0.5rem",
     height: "100%",
     "&:hover": {
-      backgroundColor: "#262b40",
-      color: "#fff",
+      backgroundColor: "#61dafb",
+      color: "#262b40",
     },
   },
   "& .notSelectedBtn": {
@@ -805,4 +842,14 @@ const RevenueImgBox = styled(Box)({
     width: "30px",
     height: "30px",
   },
+});
+
+const BarChatLabelTypo = styled(Box)({
+  color: "rgb(74, 80, 115)",
+  fontSize: "16px",
+  fontWeight: 400,
+  maxWidth: "120px",
+  whiteSpace: "nowrap",
+  textOverflow: "ellipsis",
+  overflow: "hidden",
 });

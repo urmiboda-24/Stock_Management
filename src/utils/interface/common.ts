@@ -33,3 +33,11 @@ export interface ITextField {
   touched?: boolean;
   disabled?: boolean;
 }
+
+export interface IPagination {
+  search: string;
+  sortBy: string;
+  sortOrder: string;
+  page: number;
+  pageSize: number;
+}

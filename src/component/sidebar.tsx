@@ -21,8 +21,8 @@ import { AppRoutings } from "../utils/enums/app-routings";
 
 const SidebarOption = [
   { name: "Overview", icon: HomeIcon, path: AppRoutings.Dashboard },
-  { name: "Transactions", icon: SettingsIcon, path: AppRoutings.Transactions },
-  { name: "Stock", icon: ShowChartIcon, path: AppRoutings.AdminHome },
+  { name: "Transactions", icon: ShowChartIcon, path: AppRoutings.Transactions },
+  { name: "Setting", icon: SettingsIcon, path: AppRoutings.AdminHome },
   {
     name: "Admin Home",
     icon: WifiProtectedSetupIcon,
@@ -68,24 +68,24 @@ const SidebarComponent = ({ children }: any) => {
       >
         <SidebarMenu>
           {SidebarOption.map((option: ISidebar) => (
-            <ListItemButton
-              key={option.name}
-              className="list-btn"
-              style={{ height: "60px" }}
+            <NavLink
+              to={option.path}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                textDecoration: "none",
+                color: "white",
+              }}
             >
-              <NavLink
-                to={option.path}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  textDecoration: "none",
-                  color: "white",
-                }}
+              <ListItemButton
+                key={option.name}
+                className="list-btn"
+                style={{ height: "60px" }}
               >
                 <option.icon sx={{ marginRight: 1 }} />
                 <Typography>{option.name}</Typography>
-              </NavLink>
-            </ListItemButton>
+              </ListItemButton>
+            </NavLink>
           ))}
         </SidebarMenu>
       </Drawer>

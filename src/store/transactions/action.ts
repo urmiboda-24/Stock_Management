@@ -1,4 +1,10 @@
 import {
+  DELETE_TRANSACTION_FAILURE,
+  DELETE_TRANSACTION_REQUEST,
+  DELETE_TRANSACTION_SUCCESS,
+  EDIT_TRANSACTION_FAILURE,
+  EDIT_TRANSACTION_REQUEST,
+  EDIT_TRANSACTION_SUCCESS,
   GET_TRANSACTION_LIST_FAILURE,
   GET_TRANSACTION_LIST_REQUEST,
   GET_TRANSACTION_LIST_SUCCESS,
@@ -6,8 +12,19 @@ import {
 } from "./actionType";
 
 import {
-  GetTransactionFailurePayload,
+  DeleteTransactionFailure,
+  DeleteTransactionPayload,
+  DeleteTransactionRequest,
+  DeleteTransactionSuccess,
+  DeleteTransactionSuccessPayload,
+  EditTransactionFailure,
+  EditTransactionPayload,
+  EditTransactionRequest,
+  EditTransactionSuccess,
+  EditTransactionSuccessPayload,
+  FailurePayload,
   GetTransactionPayload,
+  GetTransactionRequest,
   GetTransactionSuccessPayload,
   RowPerPagePayload,
 } from "./types";
@@ -17,22 +34,63 @@ export const rowsPerPageChange = (payload: RowPerPagePayload) => ({
   payload,
 });
 
-export const getTransactionList = (callback: GetTransactionPayload) => ({
+export const getTransactionList = (
+  payload: GetTransactionPayload
+): GetTransactionRequest => ({
   type: GET_TRANSACTION_LIST_REQUEST,
-  callback,
+  payload,
 });
 
 export const getTransactionListSuccess = (
-  callback: GetTransactionSuccessPayload
+  payload: GetTransactionSuccessPayload
 ) => ({
   type: GET_TRANSACTION_LIST_SUCCESS,
-  callback,
+  payload,
 });
 
-export const getTransactionListFailure = (
-  callback: GetTransactionFailurePayload
-) => ({
+export const getTransactionListFailure = (payload: FailurePayload) => ({
   type: GET_TRANSACTION_LIST_FAILURE,
-  callback,
+  payload,
 });
-// export const pageChange = (payload:)
+
+export const editTransactionRequest = (
+  payload: EditTransactionPayload
+): EditTransactionRequest => ({
+  type: EDIT_TRANSACTION_REQUEST,
+  payload,
+});
+
+export const editTransactionSuccess = (
+  payload: EditTransactionSuccessPayload
+): EditTransactionSuccess => ({
+  type: EDIT_TRANSACTION_SUCCESS,
+  payload,
+});
+
+export const editTransactionFailure = (
+  payload: FailurePayload
+): EditTransactionFailure => ({
+  type: EDIT_TRANSACTION_FAILURE,
+  payload,
+});
+
+export const deleteTransactionRequest = (
+  payload: DeleteTransactionPayload
+): DeleteTransactionRequest => ({
+  type: DELETE_TRANSACTION_REQUEST,
+  payload,
+});
+
+export const deleteTransactionSuccess = (
+  payload: DeleteTransactionSuccessPayload
+): DeleteTransactionSuccess => ({
+  type: DELETE_TRANSACTION_SUCCESS,
+  payload,
+});
+
+export const deleteTransactionFailure = (
+  payload: FailurePayload
+): DeleteTransactionFailure => ({
+  type: DELETE_TRANSACTION_FAILURE,
+  payload,
+});

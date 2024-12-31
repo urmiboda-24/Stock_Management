@@ -97,10 +97,6 @@ export type SignUpFailure = {
   payload: FailurePayload;
 };
 
-// export type AuthInfo = {
-//   type: typeof SET_AUTH_INFO;
-// };
-
 export type AuthActions =
   | LoginRequest
   | LoginSuccess

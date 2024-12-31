@@ -5,11 +5,13 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  FormHelperText,
   FormLabel,
   IconButton,
   Menu,
   MenuItem,
   Paper,
+  Select,
   Table,
   TableBody,
   TableCell,
@@ -25,20 +27,28 @@ import {
 import CommonHeader from "../../../component/header";
 import CommonTextField from "../../../component/customeTextField";
 import { MoreVert, Search, Settings } from "@mui/icons-material";
-import { useState as UseState, useEffect as UseEffect } from "react";
+import { useEffect, useState } from "react";
+import { MapDispatchToProps, connect, useSelector } from "react-redux";
 import {
-  MapDispatchToProps,
-  connect,
-  useSelector as UseSelector,
-} from "react-redux";
-import { ITransactionContainerDispatch } from "../../../utils/interface/transactions";
+  ITransactionAttr,
+  ITransactionContainerDispatch,
+} from "../../../utils/interface/transactions";
 import {
+  deleteTransactionRequest,
+  editTransactionRequest,
   getTransactionList,
   rowsPerPageChange,
 } from "../../../store/transactions/action";
-import { useFormik as UseFormik } from "formik";
+import { useFormik } from "formik";
 import * as Yup from "yup";
-import { GetTransactionSuccessPayload } from "../../../store/transactions/types";
+import {
+  DeleteTransactionSuccessPayload,
+  EditTransactionSuccessPayload,
+  GetTransactionSuccessPayload,
+} from "../../../store/transactions/types";
+import { columns } from "../../../utils/constants/transaction";
+import { getStatusColor } from "../../../utils/helper/userDashboard";
+import { showToast } from "../../../component/toast";
 
 export type TransactionProps = ITransactionContainerDispatch;
 
@@ -48,14 +58,19 @@ const mapDispatchToProps: MapDispatchToProps<
 > = {
   rowsPerPageChange,
   getTransactionList,
+  editTransactionRequest,
+  deleteTransactionRequest,
 };
+
+const validation = Yup.object().shape({
+  bill_for: Yup.string().required("Please enter bill name"),
+  status: Yup.string().required("Please select status"),
+});
 
 const renderNewTask = () => {
   return (
     <NewTaskBox>
-      {/* <Box style={{ maxWidth: "130px" }}> */}
       <TransactionTitle>Transaction</TransactionTitle>
-      {/* </Box> */}
       <ShareExportBox>
         <ShareButton className="share-btn">Share</ShareButton>
         <ShareButton className="export-btn">Export</ShareButton>
@@ -63,165 +78,49 @@ const renderNewTask = () => {
     </NewTaskBox>
   );
 };
-interface Column {
-  id: keyof Row; // Ensures `id` matches keys in `Row`
-  label: string;
-  align?: "left" | "center" | "right";
-}
 
-interface Row {
-  id: number;
-  title: string;
-  issuesDate: string;
-  dueDate: string;
-  total: string;
-  status: string;
-  action: string;
-}
-const renderTable = (props: TransactionProps) => {
-  const selector = UseSelector((state: any) => state.transactions);
-  const { errors, touched, handleSubmit, getFieldProps } = UseFormik({
-    initialValues: {
-      name: "",
-      price: "",
-    },
-    validationSchema: Yup.object().shape({
-      name: Yup.string().required("Please enter stock name"),
-      price: Yup.string()
-        .required("Please enter price")
-        .typeError("Price must be digit"),
-    }),
-    onSubmit: (values) => {
-      console.log("abc=>edit-save", values);
+const Transactions = (props: TransactionProps) => {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const handleSettingClose = () => {
+    setAnchorEl(null);
+  };
+  const [anchorElTable, setAnchorElTable] = useState<null | HTMLElement>(null);
+  const [selectedRow, setSelectedRow] = useState<string | null | number>(null);
+  const [editOpen, setEditOpen] = useState<boolean>(false);
+  const [orderBy, setOrderBy] = useState<string>("id");
+  const [order, setOrder] = useState<"desc" | "asc">("asc");
+  const [searchValue, setSearchValue] = useState<string>("");
+  const [transactionList, setTransactionList] = useState<ITransactionAttr[]>(
+    []
+  );
+  const [page, setPage] = useState<number>(1);
+  const [rowPerPagePage, setRowPerPagePage] = useState<number>(5);
+  const selector = useSelector((state: any) => state.transactions);
+  const [initialFormValue, setInitialFormValue] = useState({
+    bill_for: "",
+    status: "",
+    id: "",
+  });
+  const { errors, touched, handleSubmit, getFieldProps, values } = useFormik({
+    initialValues: initialFormValue,
+    validationSchema: validation,
+    enableReinitialize: true,
+    onSubmit: (value) => {
+      props.editTransactionRequest({
+        value,
+        callback: onEditSuccess,
+      });
     },
   });
-  const columns: Column[] = [
-    {
-      label: "#",
-      id: "id",
-    },
-    {
-      label: "Bill For",
-      id: "title",
-    },
-    {
-      label: "Issue Date",
-      id: "issuesDate",
-    },
-    {
-      label: "Due Date",
-      id: "dueDate",
-    },
-    {
-      label: "Total",
-      id: "total",
-    },
-    {
-      label: "Status",
-      id: "status",
-    },
-    {
-      label: "Action",
-      id: "action",
-    },
-  ];
-  const rows: Row[] = [
-    {
-      id: 300500,
-      title: "Platinum Subscription Plan",
-      issuesDate: "29 Dec 2024",
-      dueDate: "31 Dec 2024",
-      total: "$799.00",
-      status: "Paid",
-      action: "",
-    },
-    {
-      id: 300500,
-      title: "Platinum Subscription Plan",
-      issuesDate: "29 Dec 2024",
-      dueDate: "31 Dec 2024",
-      total: "$799.00",
-      status: "Paid",
-      action: "",
-    },
-    {
-      id: 300500,
-      title: "Platinum Subscription Plan",
-      issuesDate: "29 Dec 2024",
-      dueDate: "31 Dec 2024",
-      total: "$799.00",
-      status: "Paid",
-      action: "",
-    },
-    {
-      id: 300500,
-      title: "Platinum Subscription Plan",
-      issuesDate: "29 Dec 2024",
-      dueDate: "31 Dec 2024",
-      total: "$799.00",
-      status: "Paid",
-      action: "",
-    },
-    {
-      id: 300500,
-      title: "Platinum Subscription Plan",
-      issuesDate: "29 Dec 2024",
-      dueDate: "31 Dec 2024",
-      total: "$799.00",
-      status: "Paid",
-      action: "",
-    },
-    {
-      id: 300500,
-      title: "Platinum Subscription Plan",
-      issuesDate: "29 Dec 2024",
-      dueDate: "31 Dec 2024",
-      total: "$799.00",
-      status: "Paid",
-      action: "",
-    },
-    {
-      id: 300500,
-      title: "Platinum Subscription Plan",
-      issuesDate: "29 Dec 2024",
-      dueDate: "31 Dec 2024",
-      total: "$799.00",
-      status: "Paid",
-      action: "",
-    },
-    {
-      id: 300500,
-      title: "Platinum Subscription Plan",
-      issuesDate: "29 Dec 2024",
-      dueDate: "31 Dec 2024",
-      total: "$799.00",
-      status: "Paid",
-      action: "",
-    },
-    {
-      id: 300500,
-      title: "Platinum Subscription Plan",
-      issuesDate: "29 Dec 2024",
-      dueDate: "31 Dec 2024",
-      total: "$799.00",
-      status: "Paid",
-      action: "",
-    },
-    {
-      id: 300500,
-      title: "Platinum Subscription Plan",
-      issuesDate: "29 Dec 2024",
-      dueDate: "31 Dec 2024",
-      total: "$799.00",
-      status: "Paid",
-      action: "",
-    },
-  ];
-  const [anchorElTable, setAnchorElTable] = UseState<null | HTMLElement>(null);
-  const [selectedRow, setSelectedRow] = UseState<string | null | number>(null);
-  const [editOpen, setEditOpen] = UseState<boolean>(false);
-  const [orderBy, setOrderBy] = UseState<string>("title");
-  const [order, setOrder] = UseState<"desc" | "asc" | undefined>("asc");
+
+  const handleSettingOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleRowOptionChange = (pageValue: number) => {
+    setRowPerPagePage(pageValue);
+  };
+
   const handleActionClick = (
     event: React.MouseEvent<HTMLElement>,
     rowId: number
@@ -229,191 +128,92 @@ const renderTable = (props: TransactionProps) => {
     setAnchorElTable(event.currentTarget);
     setSelectedRow(rowId);
   };
+
   const handleActionClose = () => {
     setAnchorElTable(null);
   };
+
   const handleEditClick = (rowId: number) => {
     setEditOpen(true);
+    const transactionData = transactionList.filter((data) => data.id === rowId);
+    setInitialFormValue({
+      bill_for: transactionData[0].bill_title,
+      status: transactionData[0].status,
+      id: rowId.toString(),
+    });
   };
+
   const handleEditDialogClose = () => {
     setEditOpen(false);
   };
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage + 1);
+  };
+
   const handleSort = (columnId: string) => {
     const isAsc = orderBy === columnId && order === "asc";
     const newOrder = isAsc ? "desc" : "asc";
     setOrderBy(columnId);
     setOrder(newOrder);
   };
+
   const onListSuccess = (response: GetTransactionSuccessPayload) => {
-    console.log("abc=>List", response);
+    setTransactionList(response.data.User);
   };
-  UseEffect(() => {
+
+  const getTransactionData = () => {
     props.getTransactionList({
+      value: {
+        search: searchValue,
+        sortBy: orderBy,
+        sortOrder: order,
+        page: page,
+        pageSize: rowPerPagePage,
+      },
       callback: onListSuccess,
     });
-  }, []);
-  return (
-    <>
-      <TablePaper>
-        <CustomTableContainer>
-          <Table stickyHeader aria-label="sticky table">
-            <TableHead>
-              <TableRow>
-                {columns.map((column) => (
-                  <TableCell key={column.id} align={"left"}>
-                    <TableSortLabel
-                      active={orderBy === column.id}
-                      direction={orderBy === column.id ? order : "asc"}
-                      onClick={() => handleSort(column.id)}
-                    >
-                      {column.label}
-                    </TableSortLabel>
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows.map((row) => {
-                return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
-                    {columns.map((column) => {
-                      const value = row[column.id];
-                      if (column.id === "action") {
-                        return (
-                          <>
-                            <TableCell key={column.id} align="left">
-                              <IconButton
-                                aria-label="more"
-                                aria-controls="long-menu"
-                                aria-haspopup="true"
-                                onClick={(event) =>
-                                  handleActionClick(event, row?.id as number)
-                                }
-                              >
-                                <MoreVert />
-                              </IconButton>
-                            </TableCell>
-                            <ActionMenu
-                              anchorEl={anchorElTable}
-                              open={
-                                Boolean(anchorElTable) && selectedRow === row.id
-                              }
-                              onClose={handleActionClose}
-                              onClick={handleActionClose}
-                              transformOrigin={{
-                                horizontal: "right",
-                                vertical: "top",
-                              }}
-                              anchorOrigin={{
-                                horizontal: "right",
-                                vertical: "bottom",
-                              }}
-                            >
-                              <MenuItem onClick={() => handleEditClick(row.id)}>
-                                Edit
-                              </MenuItem>
-                              <MenuItem>Delete</MenuItem>
-                            </ActionMenu>
-                          </>
-                        );
-                      }
-                      return (
-                        <TableCell key={column.id} align="left">
-                          {value}
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </CustomTableContainer>
-        <TablePagination
-          // rowsPerPageOptions={[]}
-          count={rows.length}
-          rowsPerPage={selector.rowPerPage}
-          page={10}
-          onPageChange={() => {}}
-          // onRowsPerPageChange={() => {}}
-          className="tablePagination"
-          labelRowsPerPage={<Box>Rows per page: {selector.rowPerPage}</Box>}
-        />
-      </TablePaper>
-      <Dialog
-        maxWidth="md"
-        open={editOpen}
-        fullWidth
-        onClose={handleEditClick}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title" variant="h5">
-          Edit Stock
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            <form onSubmit={handleSubmit}>
-              <FieldContainer>
-                <FormLabel>Stock Name</FormLabel>
-                <TextField
-                  {...getFieldProps("name")}
-                  type="name"
-                  name="name"
-                  fullWidth
-                  variant="outlined"
-                  placeholder="Enter stock name"
-                  error={Boolean(errors.name) && touched.name}
-                  helperText={(touched.name && errors.name)?.toString()}
-                />
-              </FieldContainer>
-              <FieldContainer>
-                <FormLabel>Price</FormLabel>
-                <TextField
-                  {...getFieldProps("price")}
-                  type="number"
-                  fullWidth
-                  name="price"
-                  variant="outlined"
-                  placeholder="Enter stock price"
-                  error={Boolean(errors.price) && touched.price}
-                  helperText={(touched.price && errors.price)?.toString()}
-                />
-              </FieldContainer>
-              <EditActionWrapper>
-                <SaveButton type="submit">Save</SaveButton>
-                <CancelButton onClick={handleEditDialogClose}>
-                  Cancel
-                </CancelButton>
-              </EditActionWrapper>
-            </form>
-          </DialogContentText>
-        </DialogContent>
-      </Dialog>
-    </>
-  );
-};
-const Transactions = (props: TransactionProps) => {
-  const [anchorEl, setAnchorEl] = UseState<null | HTMLElement>(null);
-  const handleSettingClose = () => {
-    setAnchorEl(null);
   };
-  const handleSettingOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
+
+  const handleSearchChange = (searchValue: string) => {
+    setSearchValue(searchValue);
+    setPage(1);
   };
-  const handleRowOptionChange = (pageValue: number) => {
-    props.rowsPerPageChange({ rowPerPagePage: pageValue });
+
+  const onEditSuccess = (response: EditTransactionSuccessPayload) => {
+    if (response.success) {
+      getTransactionData();
+      setEditOpen(false);
+    }
   };
+  const onDeleteSuccess = (response: DeleteTransactionSuccessPayload) => {
+    if (response.success) {
+      getTransactionData();
+      showToast("Transaction delete successful.", "success");
+    }
+  };
+  const handleDeleteClick = (rowId: number) => {
+    props.deleteTransactionRequest({
+      value: { id: rowId.toString() },
+      callback: onDeleteSuccess,
+    });
+  };
+
+  useEffect(() => {
+    getTransactionData();
+  }, [rowPerPagePage, order, orderBy, searchValue, page]);
+
   return (
     <>
       <CommonHeader />
       {renderNewTask()}
       <SearchWrapper>
         <CommonTextField
-          value=""
+          value={searchValue}
           placeholder="Search"
           customStyle={{ maxWidth: "520px", width: "100%", marginBottom: 0 }}
           startIcon={<Search />}
+          onChange={(event) => handleSearchChange(event.target.value)}
         />
         <Box onClick={handleSettingOpen}>
           <Settings />
@@ -427,15 +227,199 @@ const Transactions = (props: TransactionProps) => {
           transformOrigin={{ horizontal: "right", vertical: "top" }}
           anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
         >
-          <MenuItem value="" onClick={handleSettingClose}>
-            Row Per Page
-          </MenuItem>
-          <MenuItem onClick={() => handleRowOptionChange(10)}>10</MenuItem>
-          <MenuItem onClick={() => handleRowOptionChange(15)}>15</MenuItem>
-          <MenuItem onClick={() => handleRowOptionChange(20)}>20</MenuItem>
+          <MenuItem disabled>Row Per Page</MenuItem>
+          {[5, 10, 15, 20].map((option) => (
+            <MenuItem
+              key={option}
+              selected={rowPerPagePage === option}
+              onClick={() => handleRowOptionChange(option)}
+            >
+              {option}
+            </MenuItem>
+          ))}
         </Menu>
       </SearchWrapper>
-      {renderTable(props)}
+
+      {transactionList.length === 0 ? (
+        <NoDataBox>No data found!</NoDataBox>
+      ) : (
+        <></>
+      )}
+      {transactionList.length > 0 ? (
+        <TablePaper>
+          <CustomTableContainer>
+            <Table stickyHeader aria-label="sticky table">
+              <TableHead>
+                <TableRow>
+                  {columns.map((column) => {
+                    if (column.id === "action" || column.id === "id") {
+                      return (
+                        <TableCell key={column.id} align={"left"}>
+                          {column.label}
+                        </TableCell>
+                      );
+                    }
+                    return (
+                      <TableCell key={column.id} align={"left"}>
+                        <TableSortLabel
+                          active={orderBy === column.id}
+                          direction={orderBy === column.id ? order : "asc"}
+                          onClick={() => handleSort(column.id)}
+                        >
+                          {column.label}
+                        </TableSortLabel>
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {transactionList.map((row: ITransactionAttr) => {
+                  return (
+                    <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
+                      {columns.map((column) => {
+                        const value = row[column.id as keyof ITransactionAttr];
+                        if (column.id === "action") {
+                          return (
+                            <>
+                              <TableCell key={column.id} align="left">
+                                <IconButton
+                                  aria-label="more"
+                                  aria-controls="long-menu"
+                                  aria-haspopup="true"
+                                  onClick={(event) =>
+                                    handleActionClick(event, row?.id as number)
+                                  }
+                                >
+                                  <MoreVert />
+                                </IconButton>
+                              </TableCell>
+                              <ActionMenu
+                                anchorEl={anchorElTable}
+                                open={
+                                  Boolean(anchorElTable) &&
+                                  selectedRow === row.id
+                                }
+                                onClose={handleActionClose}
+                                onClick={handleActionClose}
+                                transformOrigin={{
+                                  horizontal: "right",
+                                  vertical: "top",
+                                }}
+                                anchorOrigin={{
+                                  horizontal: "right",
+                                  vertical: "bottom",
+                                }}
+                              >
+                                <MenuItem
+                                  onClick={() => handleEditClick(row.id)}
+                                >
+                                  Edit
+                                </MenuItem>
+                                <MenuItem
+                                  onClick={() => handleDeleteClick(row.id)}
+                                >
+                                  Delete
+                                </MenuItem>
+                              </ActionMenu>
+                            </>
+                          );
+                        }
+                        return (
+                          <TableCell key={column.id} align="left">
+                            {column.id === "status" ? (
+                              <span
+                                style={{
+                                  color: getStatusColor(value as string),
+                                }}
+                              >
+                                {value}
+                              </span>
+                            ) : (
+                              value
+                            )}
+                          </TableCell>
+                        );
+                      })}
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </CustomTableContainer>
+          <TablePagination
+            count={selector.total}
+            rowsPerPage={rowPerPagePage}
+            page={page - 1}
+            onPageChange={handleChangePage}
+            className="tablePagination"
+            labelRowsPerPage={
+              <Box style={{ marginRight: 50 }}>
+                Rows per page: {rowPerPagePage}
+              </Box>
+            }
+          />
+        </TablePaper>
+      ) : (
+        <></>
+      )}
+      <Dialog
+        maxWidth="md"
+        open={editOpen}
+        fullWidth
+        onClose={handleEditDialogClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title" variant="h5">
+          Edit Stock
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            <form onSubmit={handleSubmit}>
+              <FieldContainer>
+                <FormLabel>Bill For</FormLabel>
+                <TextField
+                  {...getFieldProps("bill_for")}
+                  type="text"
+                  name="bill_for"
+                  fullWidth
+                  variant="outlined"
+                  placeholder="Enter bill for"
+                  error={Boolean(errors.bill_for) && touched.bill_for}
+                  helperText={(touched.bill_for && errors.bill_for)?.toString()}
+                />
+              </FieldContainer>
+              <FieldContainer>
+                <FormLabel>Status</FormLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  {...getFieldProps("status")}
+                  fullWidth
+                  error={Boolean(errors.status) && touched.status}
+                >
+                  <MenuItem value="" disabled>
+                    Select Status
+                  </MenuItem>
+                  <MenuItem value="Paid">Paid</MenuItem>
+                  <MenuItem value="Due">Due</MenuItem>
+                  <MenuItem value="Cancelled">Cancelled</MenuItem>
+                </Select>
+                <ErrorText>
+                  {(touched.status && errors.status)?.toString()}
+                </ErrorText>
+              </FieldContainer>
+              <EditActionWrapper>
+                <SaveButton type="submit">Save</SaveButton>
+                <CancelButton onClick={handleEditDialogClose}>
+                  Cancel
+                </CancelButton>
+              </EditActionWrapper>
+            </form>
+          </DialogContentText>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
@@ -506,10 +490,6 @@ const TablePaper = styled(Paper)({
   },
 });
 
-const CustomTableCell = styled(TableCell)({
-  minWidth: 100,
-});
-
 const CustomTableContainer = styled(TableContainer)({
   maxHeight: 700,
 });
@@ -545,4 +525,16 @@ const CancelButton = styled(Button)({
   fontWeight: 600,
   textTransform: "none",
   borderRadius: "5px",
+});
+const NoDataBox = styled(Box)({
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  width: "100%",
+  color: "grey",
+  marginTop: 100,
+});
+const ErrorText = styled(FormHelperText)({
+  color: "#d32f2f",
+  margin: "3px 14px 0px 14px",
 });
