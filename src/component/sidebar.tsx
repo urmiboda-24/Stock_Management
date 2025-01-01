@@ -18,11 +18,12 @@ import { ISidebar } from "../utils/interface/common";
 import { styled } from "@mui/system";
 import { NavLink } from "react-router-dom";
 import { AppRoutings } from "../utils/enums/app-routings";
+import CommonHeader from "./header";
 
 const SidebarOption = [
   { name: "Overview", icon: HomeIcon, path: AppRoutings.Dashboard },
   { name: "Transactions", icon: ShowChartIcon, path: AppRoutings.Transactions },
-  { name: "Setting", icon: SettingsIcon, path: AppRoutings.AdminHome },
+  { name: "Setting", icon: SettingsIcon, path: AppRoutings.Setting },
   {
     name: "Admin Home",
     icon: WifiProtectedSetupIcon,
@@ -89,8 +90,10 @@ const SidebarComponent = ({ children }: any) => {
           ))}
         </SidebarMenu>
       </Drawer>
-
-      <Content isSmallScreen={isSmallScreen}>{children}</Content>
+      <Content isSmallScreen={isSmallScreen}>
+        <CommonHeader />
+        {children}
+      </Content>
     </SidebarContainer>
   );
 };

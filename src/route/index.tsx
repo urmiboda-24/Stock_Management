@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { IRootState } from "../store/store";
 import SidebarComponent from "../component/sidebar";
 import Transactions from "../pages/User/Transactions";
+import ProfileSetting from "../pages/User/ProfileSetting";
 
 const RouteList: IRoute[] = [
   {
@@ -51,6 +52,14 @@ const RouteList: IRoute[] = [
     component: <Transactions />,
     isAdmin: false,
   },
+  {
+    id: 6,
+    path: AppRoutings.Setting,
+    exact: true,
+    isProtectedRoute: true,
+    component: <ProfileSetting />,
+    isAdmin: false,
+  },
 ];
 
 const AppRoutes: React.FC = () => {
@@ -61,8 +70,10 @@ const AppRoutes: React.FC = () => {
     AppRoutings.Dashboard,
     AppRoutings.AdminHome,
     AppRoutings.Transactions,
+    AppRoutings.Setting,
   ];
   const showSidebar = urlList.toString().includes(location.pathname);
+
   const htmlElement = () => {
     return (
       <Routes>

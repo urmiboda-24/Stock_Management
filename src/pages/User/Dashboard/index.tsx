@@ -26,11 +26,12 @@ import {
   InsertInvitation,
   Assignment,
   Public,
+  Language,
 } from "@mui/icons-material";
 import CustomTextField from "../../../component/customeTextField";
 import CustomLineChart from "../../../component/customeLineChart";
 import { ChartOptions } from "chart.js";
-import { trendingUpSvg } from "../../../asset/incex";
+import { trendingUpSvg } from "../../../asset";
 import {
   acquisitionList,
   rankList,
@@ -171,7 +172,7 @@ const renderRevenueCard = () => {
           <DateRange variant="body2">
             Feb 1 - Apr 1, &nbsp;
             <span style={{ display: "flex", alignItems: "center" }}>
-              🌐 WorldWide
+              <Language fontSize="small" /> WorldWide
             </span>
           </DateRange>
           <GrowthPercentage variant="body2">
@@ -463,7 +464,6 @@ const Dashboard = (props: IDashboardContainerDispatch) => {
   }, []);
   return (
     <Box style={{ width: "100%" }}>
-      <CommonHeader />
       {renderNewTask()}
       {renderSaleChat()}
       {renderCustomerRow()}

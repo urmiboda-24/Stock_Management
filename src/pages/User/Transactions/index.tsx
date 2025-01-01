@@ -205,7 +205,6 @@ const Transactions = (props: TransactionProps) => {
 
   return (
     <>
-      <CommonHeader />
       {renderNewTask()}
       <SearchWrapper>
         <CommonTextField

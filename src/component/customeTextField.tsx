@@ -19,7 +19,6 @@ interface CommonTextFieldProps {
 }
 
 const StyledTextField = styled(TextField)(({ theme }) => ({
-  marginBottom: theme.spacing(2),
   height: "40px",
   "& .MuiOutlinedInput-root": {
     borderRadius: "10px",
@@ -69,7 +68,7 @@ const CommonTextField: React.FC<CommonTextFieldProps> = ({
           ),
         },
       }}
-      style={customStyle} // Apply the custom styles here
+      style={customStyle}
     />
   );
 };
