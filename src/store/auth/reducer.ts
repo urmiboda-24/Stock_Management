@@ -15,6 +15,8 @@ export interface IAuthState {
   userEmail: string;
   isAuthenticated: boolean;
   role: string;
+  userId: string;
+  userName: string;
 }
 const initialState: IAuthState = {
   pending: false,
@@ -23,6 +25,8 @@ const initialState: IAuthState = {
   userEmail: "",
   isAuthenticated: false,
   role: "",
+  userId: "",
+  userName: "",
 };
 
 const reducers = (state = initialState, action: AuthActions): unknown => {
@@ -41,6 +45,8 @@ const reducers = (state = initialState, action: AuthActions): unknown => {
         isAuthenticated: true,
         role: action.payload.data[0].email.includes("admin") ? "admin" : "user",
         userEmail: action.payload.data[0].email,
+        userId: action.payload.data[0].id,
+        userName: action.payload.data[0].full_name,
       };
     case LOGIN_FAILURE:
       return {

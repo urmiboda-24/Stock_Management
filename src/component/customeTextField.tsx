@@ -7,6 +7,9 @@ interface CommonTextFieldProps {
   label?: string;
   value: string;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onBlur?: (
+    event: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
   type?: string;
   placeholder?: string;
   error?: boolean;
@@ -16,6 +19,8 @@ interface CommonTextFieldProps {
   startIcon?: React.ReactNode;
   endIcon?: React.ReactNode;
   customStyle?: React.CSSProperties;
+  name?: string;
+  id?: string;
 }
 
 const StyledTextField = styled(TextField)(({ theme }) => ({
@@ -36,6 +41,7 @@ const CommonTextField: React.FC<CommonTextFieldProps> = ({
   label,
   value,
   onChange,
+  onBlur,
   type = "text",
   placeholder = "",
   error = false,
@@ -45,16 +51,21 @@ const CommonTextField: React.FC<CommonTextFieldProps> = ({
   startIcon,
   endIcon,
   customStyle = {},
+  name,
+  id,
 }) => {
   return (
     <StyledTextField
       label={label}
       value={value}
       onChange={onChange}
+      id={id}
+      name={name}
       type={type}
       placeholder={placeholder}
       error={error}
       helperText={helperText}
+      onBlur={onBlur}
       disabled={disabled}
       fullWidth={fullWidth}
       variant="outlined"

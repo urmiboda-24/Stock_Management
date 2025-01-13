@@ -20,9 +20,11 @@ import { useState } from "react";
 import { commonNavigate } from "../utils/helper";
 import { useNavigate } from "react-router-dom";
 import { AppRoutings } from "../utils/enums/app-routings";
+import { useSelector } from "react-redux";
 const CommonHeader = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const navigate = useNavigate();
+  const { userName } = useSelector((state: any) => state.auth);
   const handleProfileClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -52,7 +54,7 @@ const CommonHeader = () => {
           </Box>
           <UserInfoBox onClick={handleProfileClick}>
             <Avatar />
-            <UserNameTypo>Bonnie Green</UserNameTypo>
+            <UserNameTypo>{userName}</UserNameTypo>
           </UserInfoBox>
           <ProfileMenu
             anchorEl={anchorEl}
@@ -125,7 +127,6 @@ const UserInfoBox = styled(Box)({
   display: "flex",
   gap: "10px",
   alignItems: "center",
-  maxWidth: "calc(100% - 50px)",
   "@media (max-width:600px)": {
     flexDirection: "column",
     gap: "5px",

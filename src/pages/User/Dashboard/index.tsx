@@ -75,7 +75,7 @@ const renderNewTask = () => {
 
 const renderSaleChat = () => {
   const { dashboardData } = UseSelector((state: any) => state.dashboard);
-  const saleChartData = dashboardData[0];
+  const saleChartData = dashboardData.length > 0 ? dashboardData[0] : [];
   const [isWeek, setIsWeek] = UseState<boolean>(true);
   const onWeekMonthClick = (type: string) => {
     setIsWeek(type !== "Month");
@@ -367,8 +367,8 @@ const renderAcquisitionSection = () => {
 
 const renderOrderSection = () => {
   const { dashboardData } = UseSelector((state: any) => state.dashboard);
-  const chart1 = dashboardData[1];
-  const chart2 = dashboardData[2];
+  const chart1 = dashboardData.length ? dashboardData[1] : [];
+  const chart2 = dashboardData.length ? dashboardData[2] : [];
   const data = {
     labels: chart1.week,
     datasets: [

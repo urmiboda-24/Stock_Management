@@ -119,6 +119,7 @@ const Transactions = (props: TransactionProps) => {
 
   const handleRowOptionChange = (pageValue: number) => {
     setRowPerPagePage(pageValue);
+    setPage(1);
   };
 
   const handleActionClick = (

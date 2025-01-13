@@ -1,81 +1,3 @@
-// import React from "react";
-// import { styled } from "@mui/material/styles";
-// import TextField from "@mui/material/TextField";
-// import InputAdornment from "@mui/material/InputAdornment";
-// import {
-//   Select,
-//   MenuItem,
-//   SelectChangeEvent,
-//   FormHelperText,
-// } from "@mui/material";
-
-// interface CommonSelectProps {
-//   label?: string;
-//   value: string;
-//   onChange?: (event: SelectChangeEvent) => void;
-//   type?: string;
-//   placeholder?: string;
-//   error?: boolean;
-//   helperText?: string;
-//   disabled?: boolean;
-//   fullWidth?: boolean;
-//   customStyle?: React.CSSProperties;
-//   options: { value: string | number; label: string | number }[];
-// }
-
-// const StyledSelect = styled(Select)(({ theme }) => ({
-//   // marginBottom: theme.spacing(2),
-//   //   height: "40px",
-//   //   "& .MuiOutlinedInput-root": {
-//   //     borderRadius: "10px",
-//   //     height: "100%",
-//   //     "&:hover fieldset": {
-//   //       borderColor: theme.palette.primary.main,
-//   //     },
-//   //     "&.Mui-focused fieldset": {
-//   //       borderColor: theme.palette.primary.dark,
-//   //     },
-//   //   },
-// }));
-
-// const CommonSelect: React.FC<CommonSelectProps> = ({
-//   label,
-//   value,
-//   onChange,
-//   type = "text",
-//   placeholder = "",
-//   error = false,
-//   helperText = "",
-//   disabled = false,
-//   fullWidth = true,
-//   customStyle = {},
-//   options,
-// }) => {
-//   return (
-//     <>
-//       <Select
-//         label={label}
-//         style={customStyle}
-//         value={value}
-//         onChange={onChange}
-//         type={type}
-//         error={error}
-//         disabled={disabled}
-//         fullWidth={fullWidth}
-//         variant="outlined"
-//       >
-//         <MenuItem value={""}>{placeholder}</MenuItem>
-//         {options.map((item) => (
-//           <MenuItem value={item.value}>{item.label}</MenuItem>
-//         ))}
-//       </Select>
-//       <FormHelperText>{helperText}</FormHelperText>
-//     </>
-//   );
-// };
-
-// export default CommonSelect;
-
 import React from "react";
 import { styled } from "@mui/material/styles";
 import Select from "@mui/material/Select";
@@ -95,6 +17,7 @@ interface CommonSelectProps {
   fullWidth?: boolean;
   customStyle?: React.CSSProperties;
   options: { value: string | number; label: string | number }[];
+  onBlur?: (event: React.FocusEvent<HTMLInputElement>) => void;
 }
 
 const SelectBox = styled(Box)(({ theme }) => ({
@@ -113,6 +36,9 @@ const SelectBox = styled(Box)(({ theme }) => ({
   "& .MuiSelect-select": {
     padding: "22px",
   },
+  "& .MuiFormHelperText-root": {
+    margin: "3px 14px 0 14px",
+  },
 }));
 
 const StyledPlaceholder = styled(MenuItem)(({ theme }) => ({
@@ -124,7 +50,6 @@ const CommonSelect: React.FC<CommonSelectProps> = ({
   label,
   value,
   onChange,
-  type = "text",
   placeholder = "",
   error = false,
   helperText = "",
@@ -132,18 +57,23 @@ const CommonSelect: React.FC<CommonSelectProps> = ({
   fullWidth = true,
   customStyle = {},
   options,
+  onBlur,
+  ...rest
 }) => {
   return (
     <SelectBox style={customStyle}>
       <Select
+        {...rest}
         value={value}
+        label={label}
         onChange={onChange}
+        onBlur={onBlur}
         error={error}
         disabled={disabled}
         fullWidth={fullWidth}
         displayEmpty
         renderValue={(selected) => {
-          if (selected.length === 0) {
+          if (!selected) {
             return <StyledPlaceholder>{placeholder}</StyledPlaceholder>;
           }
 
