@@ -240,41 +240,36 @@ const Transactions = (props: TransactionProps) => {
         </Menu>
       </SearchWrapper>
 
-      {transactionList.length === 0 ? (
-        <NoDataBox>No data found!</NoDataBox>
-      ) : (
-        <></>
-      )}
-      {transactionList.length > 0 ? (
-        <TablePaper>
-          <CustomTableContainer>
-            <Table stickyHeader aria-label="sticky table">
-              <TableHead>
-                <TableRow>
-                  {columns.map((column) => {
-                    if (column.id === "action" || column.id === "id") {
-                      return (
-                        <TableCell key={column.id} align={"left"}>
-                          {column.label}
-                        </TableCell>
-                      );
-                    }
+      <TablePaper>
+        <CustomTableContainer>
+          <Table stickyHeader aria-label="sticky table">
+            <TableHead>
+              <TableRow>
+                {columns.map((column) => {
+                  if (column.id === "action" || column.id === "id") {
                     return (
                       <TableCell key={column.id} align={"left"}>
-                        <TableSortLabel
-                          active={orderBy === column.id}
-                          direction={orderBy === column.id ? order : "asc"}
-                          onClick={() => handleSort(column.id)}
-                        >
-                          {column.label}
-                        </TableSortLabel>
+                        {column.label}
                       </TableCell>
                     );
-                  })}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {transactionList.map((row: ITransactionAttr) => {
+                  }
+                  return (
+                    <TableCell key={column.id} align={"left"}>
+                      <TableSortLabel
+                        active={orderBy === column.id}
+                        direction={orderBy === column.id ? order : "asc"}
+                        onClick={() => handleSort(column.id)}
+                      >
+                        {column.label}
+                      </TableSortLabel>
+                    </TableCell>
+                  );
+                })}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {transactionList.length !== 0 ? (
+                transactionList.map((row: ITransactionAttr) => {
                   return (
                     <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
                       {columns.map((column) => {
@@ -343,26 +338,30 @@ const Transactions = (props: TransactionProps) => {
                       })}
                     </TableRow>
                   );
-                })}
-              </TableBody>
-            </Table>
-          </CustomTableContainer>
-          <TablePagination
-            count={selector.total}
-            rowsPerPage={rowPerPagePage}
-            page={page - 1}
-            onPageChange={handleChangePage}
-            className="tablePagination"
-            labelRowsPerPage={
-              <Box style={{ marginRight: 50 }}>
-                Rows per page: {rowPerPagePage}
-              </Box>
-            }
-          />
-        </TablePaper>
-      ) : (
-        <></>
-      )}
+                })
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={7}>
+                    <NoDataBox>No data found!</NoDataBox>
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </CustomTableContainer>
+        <TablePagination
+          count={selector.total}
+          rowsPerPage={rowPerPagePage}
+          page={page - 1}
+          onPageChange={handleChangePage}
+          className="tablePagination"
+          labelRowsPerPage={
+            <Box style={{ marginRight: 50 }}>
+              Rows per page: {rowPerPagePage}
+            </Box>
+          }
+        />
+      </TablePaper>
       <Dialog
         maxWidth="md"
         open={editOpen}
@@ -532,7 +531,7 @@ const NoDataBox = styled(Box)({
   alignItems: "center",
   width: "100%",
   color: "grey",
-  marginTop: 100,
+  margin: "20px 0",
 });
 const ErrorText = styled(FormHelperText)({
   color: "#d32f2f",
