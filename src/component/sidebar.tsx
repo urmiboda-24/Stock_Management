@@ -9,9 +9,6 @@ import {
   useTheme,
   List,
 } from "@mui/material";
-import SettingsIcon from "@mui/icons-material/Settings";
-import HomeIcon from "@mui/icons-material/Home";
-import ShowChartIcon from "@mui/icons-material/ShowChart";
 import WifiProtectedSetupIcon from "@mui/icons-material/WifiProtectedSetup";
 import MenuIcon from "@mui/icons-material/Menu";
 import { ISidebar } from "../utils/interface/common";
@@ -19,11 +16,13 @@ import { styled } from "@mui/system";
 import { NavLink } from "react-router-dom";
 import { AppRoutings } from "../utils/enums/app-routings";
 import CommonHeader from "./header";
+import { Assessment, Home, Settings, ShowChart } from "@mui/icons-material";
 
 const SidebarOption = [
-  { name: "Overview", icon: HomeIcon, path: AppRoutings.Dashboard },
-  { name: "Transactions", icon: ShowChartIcon, path: AppRoutings.Transactions },
-  { name: "Setting", icon: SettingsIcon, path: AppRoutings.Setting },
+  { name: "Overview", icon: Home, path: AppRoutings.Dashboard },
+  { name: "Transactions", icon: ShowChart, path: AppRoutings.Transactions },
+  { name: "Setting", icon: Settings, path: AppRoutings.Setting },
+  { name: "Portfolio", icon: Assessment, path: AppRoutings.Portfolio },
   {
     name: "Admin Home",
     icon: WifiProtectedSetupIcon,

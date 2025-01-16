@@ -1,4 +1,7 @@
 import {
+  ADD_PROFILE_FAILURE,
+  ADD_PROFILE_REQUEST,
+  ADD_PROFILE_SUCCESS,
   EDIT_PROFILE_FAILURE,
   EDIT_PROFILE_IMAGE_FAILURE,
   EDIT_PROFILE_IMAGE_REQUEST,
@@ -11,6 +14,11 @@ import {
 } from "./actionType";
 
 import {
+  AddProfileFailure,
+  AddProfilePayload,
+  AddProfileRequest,
+  AddProfileSuccess,
+  AddProfileSuccessPayload,
   EditProfileFailure,
   EditProfilePayload,
   EditProfileRequest,
@@ -85,5 +93,26 @@ export const editProfileFailure = (
   payload: FailurePayload
 ): EditProfileFailure => ({
   type: EDIT_PROFILE_FAILURE,
+  payload,
+});
+
+export const addProfileRequest = (
+  payload: AddProfilePayload
+): AddProfileRequest => ({
+  type: ADD_PROFILE_REQUEST,
+  payload,
+});
+
+export const addProfileSuccess = (
+  payload: AddProfileSuccessPayload
+): AddProfileSuccess => ({
+  type: ADD_PROFILE_SUCCESS,
+  payload,
+});
+
+export const addProfileFailure = (
+  payload: FailurePayload
+): AddProfileFailure => ({
+  type: ADD_PROFILE_FAILURE,
   payload,
 });

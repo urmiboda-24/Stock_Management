@@ -2,6 +2,8 @@ import { all, call, put, takeLatest } from "redux-saga/effects";
 import service from "./services";
 
 import {
+  AddProfileRequest,
+  AddProfileSuccessPayload,
   EditProfileRequest,
   EditProfileSuccessPayload,
   GetUserProfileRequest,
@@ -10,6 +12,8 @@ import {
   UpdateUserProfileImageSuccessPayload,
 } from "./types";
 import {
+  addProfileFailure,
+  addProfileSuccess,
   editProfileFailure,
   editProfileSuccess,
   editUserProfilePhotoFailure,
@@ -18,6 +22,7 @@ import {
   getUserProfileSuccess,
 } from "./action";
 import {
+  ADD_PROFILE_REQUEST,
   EDIT_PROFILE_IMAGE_REQUEST,
   EDIT_PROFILE_REQUEST,
   GET_PROFILE_REQUEST,
@@ -101,10 +106,43 @@ function* editProfileSaga(action: EditProfileRequest) {
   }
 }
 
+function* addProfileSaga(action: AddProfileRequest) {
+  try {
+    const { firstName, lastName, birthDate, phone, num, ...value } =
+      action.payload.value;
+    const payload = {
+      first_name: firstName,
+      last_name: lastName,
+      birthday: birthDate,
+      phone_number: phone,
+      block_no: num,
+      ...value,
+    };
+    const response: AddProfileSuccessPayload = yield call(
+      service.addProfile,
+      payload
+    );
+    yield put(
+      addProfileSuccess({
+        success: response.success,
+        status: response.status,
+      })
+    );
+    action.payload.callback(response);
+  } catch (e: any) {
+    yield put(
+      addProfileFailure({
+        error: e.message,
+      })
+    );
+  }
+}
+
 function* userProfileSaga() {
   yield all([takeLatest(GET_PROFILE_REQUEST, getUserProfileSaga)]);
   yield all([takeLatest(EDIT_PROFILE_IMAGE_REQUEST, editUserProfileImageSaga)]);
   yield all([takeLatest(EDIT_PROFILE_REQUEST, editProfileSaga)]);
+  yield all([takeLatest(ADD_PROFILE_REQUEST, addProfileSaga)]);
 }
 
 export default userProfileSaga;

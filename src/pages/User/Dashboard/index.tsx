@@ -28,8 +28,8 @@ import {
   Public,
   Language,
 } from "@mui/icons-material";
-import CustomTextField from "../../../component/customeTextField";
-import CustomLineChart from "../../../component/customeLineChart";
+import CustomTextField from "../../../component/customTextField";
+import CustomLineChart from "../../../component/customLineChart";
 import { ChartOptions } from "chart.js";
 import { trendingUpSvg } from "../../../asset";
 import {

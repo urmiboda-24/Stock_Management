@@ -13,9 +13,9 @@ import {
   styled,
 } from "@mui/material";
 import { Grid } from "@mui/system";
-import CommonTextField from "../../../component/customeTextField";
+import CommonTextField from "../../../component/customTextField";
 import { coverImg, profileImg1, profileImg2 } from "../../../asset";
-import CommonSelect from "../../../component/customeSelect";
+import CommonSelect from "../../../component/customSelect";
 import { DesktopDatePicker, DesktopDatePickerProps } from "@mui/x-date-pickers";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -24,6 +24,7 @@ import { useEffect, useState } from "react";
 import { IUserProfileContainerDispatch } from "../../../utils/interface/profileSetting";
 import { MapDispatchToProps, connect, useSelector } from "react-redux";
 import {
+  addProfileRequest,
   editProfileRequest,
   editUserProfilePhotoRequest,
   getUserProfileRequest,
@@ -42,6 +43,7 @@ const mapDispatchToProps: MapDispatchToProps<
   getUserProfileRequest,
   editUserProfilePhotoRequest,
   editProfileRequest,
+  addProfileRequest,
 };
 
 const initialFormValue = {
@@ -89,14 +91,13 @@ const ProfileSetting = (props: IUserProfileContainerDispatch) => {
   const [uploadProfile, setUploadProfile] = useState<string>(profileImg2);
   const selector = useSelector((state: any) => state.auth);
   const { user_id } = useSelector((state: any) => state.profile.profileData[0]);
-  const onEditProfileSuccess = async (response: EditProfileSuccessPayload) => {
+  const editProfileSuccess = async (response: EditProfileSuccessPayload) => {
     const { success } = response;
     if (success) {
       getProfileData();
       showToast("Profile updated successfully", "success");
     }
   };
-
   const {
     handleSubmit,
     touched,
@@ -112,7 +113,9 @@ const ProfileSetting = (props: IUserProfileContainerDispatch) => {
     onSubmit: (value) => {
       console.log("userId", user_id);
       if (user_id !== null) {
-        props.editProfileRequest({ value, callback: onEditProfileSuccess });
+        props.editProfileRequest({ value, callback: editProfileSuccess });
+      } else {
+        props.addProfileRequest({ value, callback: editProfileSuccess });
       }
     },
   });

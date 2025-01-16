@@ -45,8 +45,22 @@ export interface IUpdateProfileImagPayload {
   file: File;
 }
 
+export interface IAddUpdateProfilePayload {
+  first_name: string;
+  last_name: string;
+  birthday: Date | null;
+  gender: string | null;
+  phone_number: string;
+  address: string;
+  block_no: string;
+  city: string;
+  state: string;
+  zip: string;
+}
+
 export interface IUserProfileContainerDispatch {
   getUserProfileRequest: (callback: GetUserProfilePayload) => {};
   editUserProfilePhotoRequest: (payload: UpdateUserProfileImagePayload) => {};
   editProfileRequest: (payload: EditProfilePayload) => {};
+  addProfileRequest: (payload: EditProfilePayload) => {};
 }

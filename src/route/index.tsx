@@ -10,6 +10,7 @@ import { IRootState } from "../store/store";
 import SidebarComponent from "../component/sidebar";
 import Transactions from "../pages/User/Transactions";
 import ProfileSetting from "../pages/User/ProfileSetting";
+import Portfolio from "../pages/Portfolio";
 
 const RouteList: IRoute[] = [
   {
@@ -60,6 +61,14 @@ const RouteList: IRoute[] = [
     component: <ProfileSetting />,
     isAdmin: false,
   },
+  {
+    id: 7,
+    path: AppRoutings.Portfolio,
+    exact: true,
+    isProtectedRoute: true,
+    component: <Portfolio />,
+    isAdmin: false,
+  },
 ];
 
 const AppRoutes: React.FC = () => {
@@ -71,6 +80,7 @@ const AppRoutes: React.FC = () => {
     AppRoutings.AdminHome,
     AppRoutings.Transactions,
     AppRoutings.Setting,
+    AppRoutings.Portfolio,
   ];
   const showSidebar = urlList.toString().includes(location.pathname);
 

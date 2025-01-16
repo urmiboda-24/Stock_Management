@@ -1,5 +1,8 @@
 import { IProfile, IProfileAttr } from "../../utils/interface/profileSetting";
 import {
+  ADD_PROFILE_FAILURE,
+  ADD_PROFILE_REQUEST,
+  ADD_PROFILE_SUCCESS,
   EDIT_PROFILE_FAILURE,
   EDIT_PROFILE_IMAGE_FAILURE,
   EDIT_PROFILE_IMAGE_REQUEST,
@@ -93,6 +96,32 @@ export interface EditProfileFailure {
   payload: FailurePayload;
 }
 
+//ADD_PROFILE
+export interface AddProfilePayload {
+  value: IProfile;
+  callback: any;
+}
+
+export interface AddProfileSuccessPayload {
+  success: boolean;
+  status: number;
+}
+
+export interface AddProfileRequest {
+  type: typeof ADD_PROFILE_REQUEST;
+  payload: AddProfilePayload;
+}
+
+export interface AddProfileSuccess {
+  type: typeof ADD_PROFILE_SUCCESS;
+  payload: AddProfileSuccessPayload;
+}
+
+export interface AddProfileFailure {
+  type: typeof ADD_PROFILE_FAILURE;
+  payload: FailurePayload;
+}
+
 export type UserProfileActions =
   | GetUserProfileRequest
   | GetUserProfileSuccess
@@ -102,4 +131,7 @@ export type UserProfileActions =
   | UpdateUserProfileImageFailure
   | EditProfileRequest
   | EditProfileSuccess
-  | EditProfileFailure;
+  | EditProfileFailure
+  | AddProfileRequest
+  | AddProfileSuccess
+  | AddProfileFailure;

@@ -1,5 +1,6 @@
 import baseService from "../../services/base-services";
 import {
+  IAddUpdateProfilePayload,
   IProfile,
   IUpdateProfileImagPayload,
 } from "../../utils/interface/profileSetting";
@@ -20,8 +21,12 @@ const editUserProfileImage = async (payload: IUpdateProfileImagPayload) => {
 const editProfile = async (payload: any) =>
   baseService.post("updateUserInfo", payload);
 
+const addProfile = async (payload: any) =>
+  baseService.post("addUserInfo", payload);
+
 export default {
   getUserProfile,
   editUserProfileImage,
   editProfile,
+  addProfile,
 };

@@ -33,6 +33,7 @@ function* getTransactionListSaga(action: GetTransactionRequest) {
         pageSize: action.payload.value.pageSize,
       }
     );
+    //put dispatch action
     yield put(
       getTransactionListSuccess({
         data: response.data,
